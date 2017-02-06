@@ -6,7 +6,7 @@ import java.util.Iterator;
 import lombok.Data;
 
 @Data
-public class Calendar implements Iterable<LocalDate> {
+public class Calendar {
 	
 	
 }

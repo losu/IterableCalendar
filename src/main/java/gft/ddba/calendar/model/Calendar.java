@@ -20,20 +20,13 @@ public class Calendar implements Iterable<LocalDate> {
 			@Override
 			public LocalDate next() {
 
-				//if(){
-					
-					if ((startDate.equals(nextDate)) && ((startDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
-							|| (startDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)))) {
-						System.out.println("if");
-						nextDate = nextDate.plusDays(1L);
-						return startDate;
-					}
-			//	}
-				
-				
-				
-				
-				
+				if ((startDate.equals(nextDate)) && ((startDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
+						|| (startDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)))) {
+					System.out.println("if");
+					nextDate = nextDate.plusDays(1L);
+					return startDate;
+				}
+
 				do {
 					nextDate = nextDate.plusDays(1L);
 

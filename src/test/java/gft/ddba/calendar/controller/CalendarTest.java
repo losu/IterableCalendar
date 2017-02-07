@@ -58,6 +58,7 @@ public class CalendarTest {
 		Iterator<LocalDate> i1 = initialDate.iterator();
 
 		assertThat(i1.next(), is(LocalDate.of(2016, 9, 20)));
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 23)));
 	}
 
 }

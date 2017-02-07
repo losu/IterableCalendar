@@ -25,10 +25,12 @@ public class CalendarTest {
 	@Test
 	public void shouldReturnNextTuesdayOrFriday() {
 		Calendar initialDate = new Calendar(LocalDate.of(2016, 9, 19));
-		assertThat(initialDate.iterator().next(), is(LocalDate.of(2016, 9, 20)));
-		assertThat(initialDate.iterator().next(), is(LocalDate.of(2016, 9, 23)));
-		assertThat(initialDate.iterator().next(), is(LocalDate.of(2016, 9, 27)));
-		assertThat(initialDate.iterator().next(), is(LocalDate.of(2016, 9, 30)));
+		Iterator<LocalDate> i1 = initialDate.iterator();
+		
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 20)));
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 23)));
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 27)));
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 30)));
 
 	}
 
@@ -49,6 +51,13 @@ public class CalendarTest {
 		assertThat(i2.next(), is(LocalDate.of(2016, 9, 20)));
 		
 
+	}
+	@Test
+	public void shouldStartFromTheDayIfTheInitialDateIsTuesdayOrFriday() {
+		Calendar initialDate = new Calendar(LocalDate.of(2016, 9, 20));
+		Iterator<LocalDate> i1 = initialDate.iterator();
+
+		assertThat(i1.next(), is(LocalDate.of(2016, 9, 20)));
 	}
 
 }

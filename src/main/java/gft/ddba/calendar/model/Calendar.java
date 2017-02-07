@@ -15,17 +15,25 @@ public class Calendar implements Iterable<LocalDate> {
 	@Override
 	public Iterator<LocalDate> iterator() {
 		return new Iterator<LocalDate>() {
-			LocalDate currentDate = startDate;
-
+			LocalDate nextDate = startDate;
+			
 			@Override
 			public LocalDate next() {
+				System.out.println("start" +startDate);
+				System.out.println("next" + nextDate);
+				
+				if( (startDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
+						|| (startDate.getDayOfWeek().equals(DayOfWeek.FRIDAY))){
+					System.out.println("Zwracam " + startDate);
+					return startDate;
+				}
 				do {
-					currentDate = currentDate.plusDays(1L);
+					nextDate = nextDate.plusDays(1L);
 
-				} while (!(currentDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
-						&& !(currentDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)));
+				} while (!(nextDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
+						&& !(nextDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)));
 
-				return currentDate;
+				return nextDate;
 			}
 
 			@Override

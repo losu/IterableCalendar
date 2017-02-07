@@ -22,7 +22,6 @@ public class Calendar implements Iterable<LocalDate> {
 
 				if ((startDate.equals(nextDate)) && ((startDate.getDayOfWeek().equals(DayOfWeek.TUESDAY))
 						|| (startDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)))) {
-					System.out.println("if");
 					nextDate = nextDate.plusDays(1L);
 					return startDate;
 				}

@@ -12,14 +12,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import gft.ddba.calendar.impl.FileNode;
+import gft.ddba.calendar.impl.NodeHandler;
 import gft.ddba.calendar.model.FileModel;
-import gft.ddba.calendar.model.Node;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NodeTest {
 
 	@InjectMocks
-	NodeController controller;
+	NodeHandler controller;
 	@Mock
 	File rootFile;
 	@Mock
@@ -31,16 +32,16 @@ public class NodeTest {
 
 	@Test
 	public void shouldReturnOneChildWhenIsAddedToTheNodeAChild() {
-		Node<FileModel> node = new Node<>();
-		node.addChild(new Node<>());
+		FileNode<FileModel> node = new FileNode<>();
+		node.addChild(new FileNode<>());
 		assertThat(node.getChildren().size(), is(1));
 	}
 
 	@Test
-	public void test() {
+	public void rootShouldHaveThreeChildren() {
 
 		setaupMockFile();
-		Node<FileModel> rootNode = new Node<>(new FileModel(""),new Node<>());
+		FileNode<FileModel> rootNode = new FileNode<>(new FileModel(""),new FileNode<>());
 		controller.scan(rootFile, rootNode);
 
 		assertThat(rootNode.getChildren().size(), is(3));
@@ -61,4 +62,16 @@ public class NodeTest {
 		Mockito.when(child2.listFiles()).thenReturn( new File[0]);
 		Mockito.when(child3.listFiles()).thenReturn(new File[0]);
 	}
+	
+	@Test
+	public void test(){
+		File file = new File("C:/Users/ddba/Desktop/Test");
+		
+		FileNode<FileModel> root  = new  FileNode<>(new FileModel("TEST"));
+		controller.scan(file, root);
+		root.forEach(System.out::println);
+		
+	}
+	
+	
 }

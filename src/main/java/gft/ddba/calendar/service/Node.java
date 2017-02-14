@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface Node<T> {
 
-	public T getData();
+	T getData();
 
-	public List<Node<T>> getChildren();
+	List<Node<T>> getChildren();
 
 }

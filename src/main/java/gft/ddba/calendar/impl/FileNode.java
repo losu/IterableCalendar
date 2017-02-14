@@ -3,13 +3,13 @@ package gft.ddba.calendar.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 import gft.ddba.calendar.service.Node;
-import lombok.Getter;
 
-public class FileNode<T> implements Node<T>,Iterable<T> {
+public class FileNode<T> implements Node<T>, Iterable<T> {
 	private T data;
-	private @Getter Node<T> parent;
+	//private @Getter Node<T> parent;
 	private List<Node<T>> children;
 
 	@Override
@@ -22,8 +22,6 @@ public class FileNode<T> implements Node<T>,Iterable<T> {
 		return children;
 	}
 
-	
-	
 	public FileNode() {
 		this.children = new ArrayList<>();
 	}
@@ -33,75 +31,45 @@ public class FileNode<T> implements Node<T>,Iterable<T> {
 		this.children = new ArrayList<>();
 	}
 
-	public FileNode(T data, FileNode<T> parent) {
+	public FileNode(T data, Node<T> parent) {
 		this.data = data;
-		this.parent = parent;
+	//	this.parent = parent;
 		this.children = new ArrayList<>();
 	}
 
-	public void addChild(FileNode<T> child) {
-		children.add(child);
-
-	}
-
-//	@Override
-//	public Iterator<T> iterator() {
-//
-//		return new Iterator<T>() {
-//			FileNode<T> nextNode = new FileNode<>(data);
-//			
-//			@Override
-//			public T next() {
-//				
-////					System.out.println(nextData);
-////					nextData= getChildren().iterator().next().getData();
-//				
-//					if(nextNode.getChildren()!=null){
-//						for(FileNode<T> child: nextNode.getChildren()){
-//							nextNode= getChildren().iterator().next();		
-//						}
-//					}
-//				
-//				return nextNode.getData();
-//			}
-//
-//			@Override
-//			public boolean hasNext() {
-//
-//				if (!getChildren().isEmpty() || getChildren() != null) {
-//					return true;
-//				}
-//				if (getParent().getChildren().stream().anyMatch(node -> !node.getData().equals(getData()))) {
-//					return true;
-//				}
-//				return false;
-//			}
-//		};
+//	public void addChild(Node<T> child) {
+//		children.add(child);
 //	}
-	
-	public void preorder(FileNode<T>root){
-		System.out.println(root.getData().toString());
-		
-		
-	}
-	
-
-	@Override
-	public String toString() {
-		return "Node [data=" + data + ", parent=" + parent + ", children=" + children + "]";
-	}
 
 	@Override
 	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return new NodeInterator();
 	}
 
-	
+	class NodeInterator implements Iterator<T> {
+		Stack<Node<T>> stackWithChildren = new Stack<>();
 
+		public NodeInterator() {
+			stackWithChildren.addAll(getChildren());
+		}
 
-	
-	
-	
+		@Override
+		public T next() {
+			Node<T> node = stackWithChildren.pop();
+			stackWithChildren.addAll(node.getChildren());
+			return node.getData();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stackWithChildren.isEmpty();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Node [data=" + data + ", children=" + children + "]";
+	}
 
 }

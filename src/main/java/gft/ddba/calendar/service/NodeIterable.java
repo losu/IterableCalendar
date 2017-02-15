@@ -1,7 +1,8 @@
 package gft.ddba.calendar.service;
 
+import java.util.ArrayDeque;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.Queue;
 
 public class NodeIterable<T> implements Iterable<T> {
 
@@ -19,7 +20,11 @@ public class NodeIterable<T> implements Iterable<T> {
 	}
 
 	class NodeInterator implements Iterator<T> {
-		Stack<Node<T>> stackWithChildren = new Stack<>();
+		/**
+		 * instead of stack it is used ArrayDeque
+		 * which has better performance
+		 */
+		Queue<Node<T>> stackWithChildren = new ArrayDeque<>();
 
 		public NodeInterator() {
 			stackWithChildren.addAll(node.getChildren());
@@ -27,7 +32,7 @@ public class NodeIterable<T> implements Iterable<T> {
 
 		@Override
 		public T next() {
-			Node<T> node = stackWithChildren.pop();
+			Node<T> node = stackWithChildren.poll();
 			stackWithChildren.addAll(node.getChildren());
 			return node.getData();
 		}

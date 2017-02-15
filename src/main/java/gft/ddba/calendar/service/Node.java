@@ -6,6 +6,7 @@ public interface Node<T> {
 
 	T getData();
 
-	List<Node<T>> getChildren();
+	//Iterable<Node<T>> getChildren();
+	List	<Node<T>> getChildren();
 
 }

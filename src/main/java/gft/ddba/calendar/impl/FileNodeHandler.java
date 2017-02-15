@@ -34,13 +34,13 @@ public class FileNodeHandler {
 				root.getChildren().add(child);
 				scan(f, child);
 			}
-		}
+		} 
 	}
 
 	@RequestMapping(value = "/scan", method = RequestMethod.GET)
 	public Node<FileModel> display() {
 		Node<FileModel> root = new FileNode<>();
-		scan(new File("C:/Users/ddba/Desktop/Test"), root);
+		scan(new File("src/"), root);
 		return root;
 	}
 

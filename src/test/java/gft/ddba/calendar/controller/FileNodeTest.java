@@ -7,14 +7,13 @@ import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import gft.ddba.calendar.impl.FileNode;
 import gft.ddba.calendar.impl.FileNodeHandler;
 import gft.ddba.calendar.model.FileModel;
+import gft.ddba.calendar.service.Node;
+import gft.ddba.calendar.service.NodeConverter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileNodeTest {
@@ -53,18 +52,17 @@ public class FileNodeTest {
 //		Mockito.when(child3.listFiles()).thenReturn(new File[0]);
 //	}
 	
-//	@Test
-//	public void test(){
-//		File file = new File("C:/Users/ddba/Desktop/Test");
-//		
-//		FileNode<FileModel> root  = new  FileNode<>(new FileModel("TEST"));
-//		
-//		//IterableNode<FileNode<FileModel>> in = new IterableNode<>(root); 
-//		
-//		controller.scan(file, root);
-//	//	root.forEach(System.out::println);
-//		
-//	}
+	@Test
+	public void test(){
+		File file = new File("C:/Users/ddba/Desktop/Test");
+		
+		Node<FileModel> root  = new FileNode<>(new FileModel("TEST"));
+		FileNodeHandler.scan(file, root);
+		
+		Iterable<FileModel> iterable = NodeConverter.convertFromTreeStructureToIterableStream(root);
+		iterable.forEach(System.out::println);
+		
+	}
 	
 	
 }

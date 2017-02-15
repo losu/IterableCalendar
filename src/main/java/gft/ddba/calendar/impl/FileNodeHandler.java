@@ -40,7 +40,9 @@ public class FileNodeHandler {
 	@RequestMapping(value = "/scan", method = RequestMethod.GET)
 	public Node<FileModel> display() {
 		Node<FileModel> root = new FileNode<>();
-		scan(new File("src/"), root);
+		scan(new File("C:/Users/ddba/Desktop/Test"), root);
+		Iterable<FileModel> iterable=NodeConverter.convertFromTreeStructureToIterableStream(root);
+		iterable.forEach(System.out::println);
 		return root;
 	}
 

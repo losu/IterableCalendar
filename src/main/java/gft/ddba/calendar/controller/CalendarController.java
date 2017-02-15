@@ -2,6 +2,8 @@ package gft.ddba.calendar.controller;
 
 import java.time.LocalDate;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import gft.ddba.calendar.model.Calendar;
 
 @RestController

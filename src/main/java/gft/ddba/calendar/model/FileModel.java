@@ -1,9 +1,8 @@
 package gft.ddba.calendar.model;
 
-import lombok.Getter;
 
 public class FileModel {
-	private @Getter String fileName;
+	private  String fileName;
 
 	public FileModel(String fileName) {
 		this.fileName = fileName;

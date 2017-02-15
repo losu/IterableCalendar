@@ -1,6 +1,6 @@
 language: java
 jdk: 
-    - oraclejdk8
+  - oraclejdk8
     
 before_install:
   - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
@@ -9,3 +9,6 @@ before_install:
 
 after_success:
   - ~/jpm/bin/codacy-coverage-reporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
+  
+env:
+  - CODACY_PROJECT_TOKEN=1482a616739d4c40b734181296503130

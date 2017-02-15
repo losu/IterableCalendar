@@ -2,7 +2,6 @@ package gft.ddba.calendar.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import org.junit.Test;
 public class NodeIterableTest {
 
 	class Royalty implements Node<String> {
-		private String title;
+		String title;
 		private List<Node<String>> childrenTitle;
 
 		public Royalty(String title, Node<String> ... children) {
@@ -33,8 +32,10 @@ public class NodeIterableTest {
 
 	@Test
 	public void shouldIterableAfterConvertionContainQueenObject() {
+		Node<String> kingdom = new Royalty("kingdom");
 		Node<String> king = new Royalty("king");
-		Node<String> kingdom = new Royalty("kingdom", king);
+
+		kingdom.getChildren().add(king);
 
 		Iterable<String> iterableNode = NodeConverter.convertFromTreeStructureToIterableStream(kingdom);
 

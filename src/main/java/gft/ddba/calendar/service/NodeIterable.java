@@ -24,7 +24,7 @@ public class NodeIterable<T> implements Iterable<T> {
 		 * instead of stack it is used ArrayDeque
 		 * which has better performance
 		 */
-		Queue<Node<T>> stackWithChildren = new ArrayDeque<>();
+		private Queue<Node<T>> stackWithChildren = new ArrayDeque<>();
 
 		public NodeInterator() {
 			stackWithChildren.addAll(node.getChildren());

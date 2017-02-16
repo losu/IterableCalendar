@@ -2,6 +2,7 @@ package gft.ddba.calendar.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class NodeIterableTest {
 
 		public Royalty(String title, Node<String> ... children) {
 			this.title = title;
-			this.childrenTitle = Arrays.asList(children);
+			this.childrenTitle = new ArrayList<>();
 		}
 
 		@Override
@@ -31,7 +32,7 @@ public class NodeIterableTest {
 	}
 
 	@Test
-	public void shouldIterableAfterConvertionContainQueenObject() {
+	public void shouldIterableAfterConvertionContainKingObject() {
 		Node<String> kingdom = new Royalty("kingdom");
 		Node<String> king = new Royalty("king");
 

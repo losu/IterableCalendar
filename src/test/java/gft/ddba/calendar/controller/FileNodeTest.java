@@ -59,7 +59,7 @@ public class FileNodeTest {
 		Node<FileModel> root  = new FileNode<>(new FileModel("TEST"));
 		FileNodeHandler.scan(file, root);
 		
-		Iterable<FileModel> iterable = NodeConverter.convertFromTreeStructureToIterableStream(root);
+		Iterable<FileModel> iterable = NodeConverter.convertTreeToIterableStream(root);
 		iterable.forEach(System.out::println);
 		
 	}

@@ -1,14 +1,16 @@
 package gft.ddba.calendar.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
-public class NodeIterableTest {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class NodeConverterTest {
 
 	class Royalty implements Node<String> {
 		String title;
@@ -44,12 +46,35 @@ public class NodeIterableTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void test() {
+	public void shouldThrowIllegalArgumentExceptionWhenRoorIsNull() {
 		Node<String> kingdom = null;
 		NodeConverter.convertFromTreeStructureToIterableStream(kingdom);
 
 	}
-	
+
+	NodeConverter converter = new NodeConverter();
+
+	@Test
+	public void test1(){
+		Node<String> kingdom = new Royalty("kingdom");
+		Node<String> king = new Royalty("king");
+		Node<String> king2 = new Royalty("king2");
+		Node<String> queen = new Royalty("queen");
+
+		kingdom.getChildren().add(king);
+		kingdom.getChildren().add(king2);
+		king.getChildren().add(queen);
+
+
+		Observable<String> iterableObservable = converter.rxConvertFromIterableToObservableStream(kingdom);
+
+		TestSubscriber<String> subscriber = new TestSubscriber<>();
+		iterableObservable.subscribe(subscriber);
+
+		subscriber.assertNoErrors();
+		subscriber.assertValues("king","king2","queen");
+
+	}
 	
 	
 }

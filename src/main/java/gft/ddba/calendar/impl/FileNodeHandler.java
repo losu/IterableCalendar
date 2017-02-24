@@ -1,5 +1,6 @@
 package gft.ddba.calendar.impl;
 
+
 import gft.ddba.calendar.model.FileModel;
 import gft.ddba.calendar.service.Node;
 import gft.ddba.calendar.service.NodeConverter;
@@ -11,7 +12,6 @@ import java.io.File;
 
 @Controller
 public class FileNodeHandler {
-
 
 	/**
 	 * Scanning the given path of the directory to create tree structure
@@ -30,10 +30,8 @@ public class FileNodeHandler {
 				root.getChildren().add(child);
 				scan(f, child);
 			}
-		}
+		} 
 	}
-
-
 
 	@RequestMapping(value = "/scan", method = RequestMethod.GET)
 	public Node<FileModel> display() {
@@ -50,12 +48,4 @@ public class FileNodeHandler {
 		return NodeConverter.convertTreeToIterableStream(root);
 
 	}
-
-//	@RequestMapping(value = "/pathScan", method = RequestMethod.GET)
-//	public List<Node<Path>> pathScan(Path path) {
-//		path = Paths.get("C:/Users/ddba/Desktop/Test/");
-//		PathNode pathNode = new PathNode(path);
-//		pathNode.getChildren().forEach(System.out::println);
-//		return pathNode.getChildren();
-//	}
 }

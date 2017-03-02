@@ -9,36 +9,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.*;
 
 public class ChangeWatcher extends Observable<Path> implements AutoCloseable {
-
-	private static Set<Observer> observers = new HashSet<>();
+	
 	private WatchService watchService;
 	private ExecutorService executorService;
 
 
+
 	public static ChangeWatcher watchChanges(Path root) throws IOException, InterruptedException {
-		return new ChangeWatcher(root, observer -> observers.add(observer));
+		CopyOnWriteArrayList<Observer> observers= new CopyOnWriteArrayList(new ArrayList<>());
+		OnSubscribe<Path> onSubscribe = observers::add;
+		return new ChangeWatcher(root, observers, onSubscribe);
 	}
 
-	private ChangeWatcher(Path root, OnSubscribe<Path> subscribe) throws IOException {
+	private ChangeWatcher(Path root, CopyOnWriteArrayList<Observer> observers, OnSubscribe<Path> subscribe) throws IOException {
 		super(subscribe);
 
-		watchService = root.getFileSystem().newWatchService();
 
+		watchService = root.getFileSystem().newWatchService();
 		Node<Path> pathNodeRoot = new PathNode(root);
 
 		NodeConverter.convertTreeToObservableStream(pathNodeRoot).subscribe((node) -> {
 					if (Files.isDirectory(node)) {
 						try {
-							node.register(watchService, ENTRY_CREATE);
+							node.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

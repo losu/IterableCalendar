@@ -4,12 +4,16 @@ import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Before;
 import org.junit.Test;
+import rx.Observer;
 import rx.observers.TestSubscriber;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -40,7 +44,9 @@ public class ChangeWatcherTest {
 		String newFile = "newfile.txt";
 		String rootDir = "/root";
 		Path root = fs.getPath(rootDir);
+
 		TestSubscriber<Path> subscriber = TestSubscriber.create();
+		List<Observer> observers = Collections.synchronizedList(new ArrayList<>());
 
 		try (ChangeWatcher pathObservable = ChangeWatcher.watchChanges(root)) {
 

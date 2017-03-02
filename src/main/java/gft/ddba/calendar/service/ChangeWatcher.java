@@ -1,131 +1,95 @@
 package gft.ddba.calendar.service;
 
-import gft.ddba.calendar.impl.FileNode;
-import gft.ddba.calendar.impl.FileNodeHandler;
-import gft.ddba.calendar.impl.PathHandler;
-import gft.ddba.calendar.model.FileModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import gft.ddba.calendar.impl.PathNode;
 import rx.Observable;
+import rx.Observer;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static java.nio.file.StandardWatchEventKinds.*;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 
-public class ChangeWatcher extends Observable<Path> {
+public class ChangeWatcher extends Observable<Path> implements AutoCloseable {
 
-	@Autowired
-	private FileNodeHandler fileNodeHandler;
-	@Autowired
-	private NodeConverter nodeConverter;
-
-	private final WatchService watcher;
-	private final Map<WatchKey, Path> keys;
-	private Observable<FileModel> observableFile;
+	private static Set<Observer> observers = new HashSet<>();
+	private WatchService watchService;
+	private ExecutorService executorService;
 
 
-
-	public ChangeWatcher(Path dir, OnSubscribe<Path> observable) throws IOException {
-		super(observable);
-		this.watcher = FileSystems.getDefault().newWatchService(); //new service registering
-		this.keys = new HashMap<>();
-
-		walkAndRegisterDirectories(dir);
+	public static ChangeWatcher watchChanges(Path root) throws IOException, InterruptedException {
+		return new ChangeWatcher(root, observer -> observers.add(observer));
 	}
 
-	/**
-	 * Register the given directory with the WatchService; This function will be called by FileVisitor
-	 */
-	private void registerDirectory(Path dir) throws IOException {
-		WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-		keys.put(key, dir);
-	}
+	private ChangeWatcher(Path root, OnSubscribe<Path> subscribe) throws IOException {
+		super(subscribe);
 
-	/**
-	 * Register the given directory, and all its sub-directories, with the WatchService.
-	 */
-	private void walkAndRegisterDirectories(final Path start) throws IOException {
-		// register directory and sub-directories
-		Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				registerDirectory(dir);
-				return FileVisitResult.CONTINUE;
-			}
-		});
-	}
+		watchService = root.getFileSystem().newWatchService();
 
-	/**
-	 * Process all events for keys queued to the watcher
-	 */
-	//@RequestMapping(value = "/process", method = RequestMethod.GET)
-	public void processEvents() {
-		PathHandler handler = new PathHandler();
+		Node<Path> pathNodeRoot = new PathNode(root);
 
-		Node<FileModel> rootDirectories = new FileNode<>();
-		fileNodeHandler.scan(new File("C:\\Users\\ddba\\Desktop\\Test"), rootDirectories);
-		Iterable<FileModel>iterableNode=nodeConverter.convertTreeToIterableStream(rootDirectories);
-		iterableNode.forEach(System.out::println);
-
-		observableFile = nodeConverter.convertTreeToObservableStream(rootDirectories);
-
-
-		for (; ; ) {
-			WatchKey key;
-			try {
-				key = watcher.take(); //waits until some action will occur
-			} catch (InterruptedException x) {
-				return;
-			}
-
-			Path dir = keys.get(key);
-			handler.pathScan();
-			if (dir != null) {
-
-				for (WatchEvent<?> event : key.pollEvents()) {
-					WatchEvent.Kind kind = event.kind();
-
-					// Context for directory entry event is the file name of entry
-					Path name = ((WatchEvent<Path>) event).context();
-					Path child = dir.resolve(name);
-
-					System.out.format("%s: %s\n", event.kind().name(), child);
-
-					// if directory is created, and watching recursively, then register it and its sub-directories
-					if (kind == ENTRY_CREATE) {
+		NodeConverter.convertTreeToObservableStream(pathNodeRoot).subscribe((node) -> {
+					if (Files.isDirectory(node)) {
 						try {
-							if (Files.isDirectory(child)) {
-								walkAndRegisterDirectories(child);
-							}
+							node.register(watchService, ENTRY_CREATE);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
 				}
+		);
 
-				// reset key and remove from set if directory no longer accessible
-				boolean valid = key.reset();
-				if (!valid) {
-					keys.remove(key);
+		executorService = Executors.newSingleThreadExecutor();
 
-					// all directories are inaccessible
-					if (keys.isEmpty()) {
-						break;
+		Runnable c = () -> {
+			while (!Thread.interrupted()) {
+
+				WatchKey key = null;
+				try {
+					key = watchService.take();
+					if (Optional.ofNullable(key).isPresent()) {
+						WatchKey finalKey = key;
+						key.pollEvents().stream()
+								.filter(event -> event.kind() == ENTRY_CREATE)
+								.forEach(event -> {
+									Path currentDirectoryPath = (Path) finalKey.watchable();
+									Path fullNewPath = currentDirectoryPath.resolve((Path) event.context());
+									if (Files.isDirectory(fullNewPath)) {
+										try {
+											fullNewPath.register(watchService, ENTRY_CREATE);
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+									}
+									observers.forEach(o -> o.onNext(fullNewPath));
+								});
 					}
+				} catch (InterruptedException e) {
+					observers.forEach(Observer::onCompleted);
 				}
+				key.reset();
 			}
-		}
+
+
+		};
+		executorService.submit(c);
+	}
+
+
+	@Override
+	public void close() throws Exception {
+//		observers.forEach(Observer::onCompleted);
+		executorService.shutdownNow();
+		//assert executorService.awaitTermination(1, TimeUnit.SECONDS);
+
+		watchService.close();
 	}
 
 }

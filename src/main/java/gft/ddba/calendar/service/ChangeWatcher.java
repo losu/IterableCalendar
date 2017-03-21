@@ -13,26 +13,22 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class ChangeWatcher extends Observable<Path> implements AutoCloseable {
-	
+
 	private WatchService watchService;
 	private ExecutorService executorService;
 
-
-
 	public static ChangeWatcher watchChanges(Path root) throws IOException, InterruptedException {
-		CopyOnWriteArrayList<Observer> observers= new CopyOnWriteArrayList(new ArrayList<>());
+		CopyOnWriteArrayList<Observer> observers = new CopyOnWriteArrayList(new ArrayList<>());
 		OnSubscribe<Path> onSubscribe = observers::add;
 		return new ChangeWatcher(root, observers, onSubscribe);
 	}
 
 	private ChangeWatcher(Path root, CopyOnWriteArrayList<Observer> observers, OnSubscribe<Path> subscribe) throws IOException {
 		super(subscribe);
-
 
 		watchService = root.getFileSystem().newWatchService();
 		Node<Path> pathNodeRoot = new PathNode(root);
@@ -48,14 +44,20 @@ public class ChangeWatcher extends Observable<Path> implements AutoCloseable {
 				}
 		);
 
-		executorService = Executors.newSingleThreadExecutor();
+		//	executorService = Executors.newSingleThreadExecutor();
 
-		Runnable c = () -> {
-			while (!Thread.interrupted()) {
+		//	Runnable c = () -> {
+		new Thread() {
+			public void run() {
 
-				WatchKey key = null;
-				try {
-					key = watchService.take();
+				while (true) {
+					WatchKey key ;
+					try {
+						key = watchService.take();
+					} catch (InterruptedException e) {
+						observers.forEach(o -> o.onError(e));
+						break;
+					}
 					if (Optional.ofNullable(key).isPresent()) {
 						WatchKey finalKey = key;
 						key.pollEvents().stream()
@@ -73,25 +75,20 @@ public class ChangeWatcher extends Observable<Path> implements AutoCloseable {
 									observers.forEach(o -> o.onNext(fullNewPath));
 								});
 					}
-				} catch (InterruptedException e) {
-					observers.forEach(Observer::onCompleted);
+					key.reset();
 				}
-				key.reset();
+				observers.forEach(Observer::onCompleted);
 			}
-
-
-		};
-		executorService.submit(c);
+		}.start();
 	}
-
+	//	executorService.submit(c);
 
 	@Override
 	public void close() throws Exception {
-//		observers.forEach(Observer::onCompleted);
-		executorService.shutdownNow();
+	//	observers.forEach(Observer::onCompleted);
+		//executorService.shutdownNow();
 		//assert executorService.awaitTermination(1, TimeUnit.SECONDS);
 
 		watchService.close();
 	}
-
 }

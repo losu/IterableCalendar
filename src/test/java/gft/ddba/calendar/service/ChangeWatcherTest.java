@@ -2,20 +2,20 @@ package gft.ddba.calendar.service;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import gft.ddba.calendar.impl.FileNodeHandler;
+import gft.ddba.calendar.impl.PathNode;
 import org.junit.Before;
 import org.junit.Test;
-import rx.Observer;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import rx.observers.TestSubscriber;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
-
 
 public class ChangeWatcherTest {
 	protected FileSystem fs;
@@ -46,7 +46,6 @@ public class ChangeWatcherTest {
 		Path root = fs.getPath(rootDir);
 
 		TestSubscriber<Path> subscriber = TestSubscriber.create();
-		List<Observer> observers = Collections.synchronizedList(new ArrayList<>());
 
 		try (ChangeWatcher pathObservable = ChangeWatcher.watchChanges(root)) {
 
@@ -62,7 +61,56 @@ public class ChangeWatcherTest {
 
 			//subscriber.assertValue(fs.getPath(file.toString()));
 			subscriber.assertValue(fs.getPath(newPath, newFile));
-
 		}
 	}
+
+	@Test
+	public void test() throws Exception {
+
+//		ReplaySubject<WatchEvent<?>> replaySubject = ReplaySubject.create();
+//		PathRx p = new PathRx();
+//		PathRx.watch(Paths.get("C:/Users/ddba/Desktop/Test"))
+//				//.map(e->e.context())
+//				.subscribe(System.out::println);
+//
+//
+
+//		PathObservables
+//				.watchRecursive(Paths.get("C:/Users/ddba/Desktop/Test"))
+//				//.map(event -> event.kind().name())
+//				.map(event -> {
+//							System.out.println(event.kind().name());
+//					return event.context();}
+//					)
+//				.subscribe(event -> System.out.println(event));
+
+
+
+		SimpMessagingTemplate a;
+		Path path = Paths.get("C:/Users/ddba/Desktop/Test");
+		Node<Path> rootNode = new PathNode(path);
+
+		FileNodeHandler.scan(new File("C:/Users/ddba/Desktop/Test"), rootNode);
+
+		Iterable<Path> iterable = NodeConverter.convertTreeToIterableStream(rootNode);
+		iterable.forEach(System.out::println);
+
+//
+//		try (ChangeWatcher pathObservable = ChangeWatcher.watchChanges(path)) {
+//			pathObservable
+//
+//
+//
+//		}
+
+//	TestSubscriber<Path> subscriber = TestSubscriber.create();
+//	List<Observer> observers = Collections.synchronizedList(new ArrayList<>());
+//
+//		try (ChangeWatcher pathObservable = ChangeWatcher.watchChanges(root)) {
+//
+//	}
+	}
+
+
+
 }

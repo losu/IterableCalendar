@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
+import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -37,7 +38,7 @@ public class FileDisplayerController {
 	private List<Subscription> subscriptions = new ArrayList<>();
 
 	@CrossOrigin
-	@RequestMapping(path = "/start", method = RequestMethod.POST )
+	@RequestMapping(path = "/start", method = RequestMethod.POST)
 	public String startObserving(@RequestBody String path) throws IOException {
 		ReactiveStream reactiveStream = reactiveStreamFactory.getReactiveStream(Paths.get(path));
 		Observable<Event> observable = reactiveStream.createObservable();
@@ -45,7 +46,7 @@ public class FileDisplayerController {
 		EventObserver observer = treeObserverFactory.getObserver(path);
 
 		subscriptions.add(observable.subscribeOn(Schedulers.io()).subscribe(observer));
-		System.out.println("Start : "+observer.getEndPoint());
+		System.out.println("Start : " + observer.getEndPoint());
 		return observer.getEndPoint();
 	}
 
@@ -64,113 +65,32 @@ public class FileDisplayerController {
 	ResponseEntity<String> obtainEndPoint(String path) throws IOException {
 		EventObserver observer = treeObserverFactory.getObserver(path);
 
-
 		return new ResponseEntity<>(observer.getEndPoint(), HttpStatus.OK);
 	}
 
 	@CrossOrigin
 	@RequestMapping(path = "/addFile", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> addFile(@RequestBody String path) throws IOException {
+	public
+	@ResponseBody
+	ResponseEntity<String> addFilePost(@RequestBody @PathParam("path") String path) throws IOException {
 		File file = new File(path);
 
-		if(file.createNewFile())
+		if (file.createNewFile())
 			return new ResponseEntity<>("\"" + file.getName() + " created\"", HttpStatus.OK);
 		else
 			return new ResponseEntity<>("\"" + file.getName() + " already exist\"", HttpStatus.OK);
-
 	}
 
 	@CrossOrigin
-	@RequestMapping(path = "/removeFile", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> removeFile(@RequestBody String path) throws IOException {
+	@RequestMapping(path = "/addFile", method = RequestMethod.GET)
+	public
+	@ResponseBody
+	ResponseEntity<String> addFileGet(@PathParam("path") String path) throws IOException {
 		File file = new File(path);
-		if(file.delete())
-			return new ResponseEntity<>("\"" + file.getName() + " deleted\"", HttpStatus.OK);
+
+		if (file.createNewFile())
+			return new ResponseEntity<>("\"" + file.getName() + " created\"", HttpStatus.OK);
 		else
-			return new ResponseEntity<>("\"" + file.getName() + " can't be deleted\"", HttpStatus.OK);
+			return new ResponseEntity<>("\"" + file.getName() + " already exist\"", HttpStatus.OK);
 	}
-
-
 }
-
-
-
-//
-//	// WebSocketSession session;
-//	@Autowired
-//	private SimpMessagingTemplate template;
-//
-//	@Scheduled(fixedDelay = 1000)
-//	public void send() {
-//
-//		List<String> pathOfFiles = new ArrayList<>();
-//		pathOfFiles = scanDirctory(new File("C:/Users/ddba/Desktop/Test"), pathOfFiles);
-//
-//		// fileController.getFileObservable();
-//
-//		Response lista = new Response(pathOfFiles);
-//		lista.getFiles().forEach(System.out::println);
-//		template.convertAndSend("/topic/greetings", lista);
-//
-//	}
-//
-//	public List<String> scanDirctory(File file, List<String> paths) {
-//		List<String> lista = new ArrayList<>();
-//		try {
-//			lista = Files.walk(Paths.get("C:/Users/ddba/Desktop/Test/")).map(el -> el.getFileName().toString())
-//					.collect(Collectors.toList());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-////		File[] folders = null;
-////
-////		folders = file.listFiles();
-////
-////		for (File f : folders) {
-////			if (f.isDirectory()) {
-////				paths.add(f.getName());
-////				// System.out.println(f.getName());
-////				scanDirctory(f, paths);
-////			} else {
-////				// System.out.println(f.getName());
-////				paths.add(f.getName());
-////			}
-////		}
-//		return lista;
-//	}
-////
-////	@CrossOrigin
-////	@RequestMapping(path = "/obtainEndPoint", method = RequestMethod.GET)
-////	@ResponseBody
-////	ResponseEntity<String> obtainEndPoint() throws IOException {
-////		FileObserver observer = treeObserverFactory.getObserver();
-////
-////		subscriptions.addSubscriber(observer.getEndPoint(), observer);
-////
-////		return new ResponseEntity<>(observer.getEndPoint(), HttpStatus.OK);
-////	}
-////
-//
-//	class FileObserver extends Subscriber<Event>{
-//
-//		@Autowired
-//		private SimpMessagingTemplate simpMessagingTemplate;
-//
-//
-//		@Override
-//		public void onCompleted() {
-//
-//		}
-//
-//		@Override
-//		public void onError(Throwable e) {
-//
-//		}
-//
-//		@Override
-//		public void onNext(Event event) {
-//			simpMessagingTemplate.convertAndSend("/event/get");
-//		}
-//	}
-//}

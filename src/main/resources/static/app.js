@@ -1,7 +1,7 @@
 'use strict';
 
 
-var App = angular.module('App',['ConnectionModule','DisconnectModule']);
+var App = angular.module('App',['ConnectionModule','DisconnectModule','FileModule']);
 
 App.controller('MenuController',['$scope','$rootScope',
         function($scope, $rootScope ) {

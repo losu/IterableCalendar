@@ -4,7 +4,7 @@ import gft.ddba.calendar.model.Event;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import rx.Observer;
 
-public class TreeObserver implements Observer<Event> {
+public class EventObserver implements Observer<Event> {
 
 	private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -14,7 +14,7 @@ public class TreeObserver implements Observer<Event> {
 
 	private String endPoint;
 
-	public TreeObserver(String endPoint, SimpMessagingTemplate simpMessagingTemplate) {
+	public EventObserver(String endPoint, SimpMessagingTemplate simpMessagingTemplate) {
 		this.endPoint = endPoint;
 		this.simpMessagingTemplate=simpMessagingTemplate;
 	}

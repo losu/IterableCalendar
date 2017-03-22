@@ -31,6 +31,8 @@ public class ReactiveStreamTest {
 
 	@Test(timeout = 1000)
 	public void shouldEmitEventOnNewDirectory() throws IOException, InterruptedException {
+		subscriber = ReplaySubject.create();
+		stream = new ReactiveStream(Paths.get(dir.getRoot().getPath()));
 		Observable<Event> observable = stream.createObservable();
 		observable.subscribe(subscriber);
 		Files.createFile(Paths.get(dir.getRoot().getPath() + "/test"));

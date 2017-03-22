@@ -11,19 +11,19 @@ import java.util.HashMap;
  * Created by ddba on 14/03/2017.
  */
 @Component
-public class TreeObserverFactory {
+public class EventObserverFactory {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	private final HashMap<String, TreeObserver> observers = new HashMap<>();
+	private final HashMap<String, EventObserver> observers = new HashMap<>();
 	private int endPointAccumulator;
 
-	public TreeObserver getObserver(String path) throws IOException {
+	public EventObserver getObserver(String path) throws IOException {
 
-		TreeObserver observer = observers.get(path);
+		EventObserver observer = observers.get(path);
 
 		if(observer==null) {
-			observer = new TreeObserver(String.valueOf(endPointAccumulator),simpMessagingTemplate);
+			observer = new EventObserver(String.valueOf(endPointAccumulator),simpMessagingTemplate);
 			endPointAccumulator++;
 			observers.put(path,observer);
 		}

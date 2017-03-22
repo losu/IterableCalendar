@@ -1,8 +1,8 @@
 package gft.ddba.calendar.controller;
 
+import gft.ddba.calendar.impl.EventObserver;
+import gft.ddba.calendar.impl.EventObserverFactory;
 import gft.ddba.calendar.impl.ReactiveStreamFactory;
-import gft.ddba.calendar.impl.TreeObserver;
-import gft.ddba.calendar.impl.TreeObserverFactory;
 import gft.ddba.calendar.model.Event;
 import gft.ddba.calendar.service.ReactiveStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,17 +32,17 @@ public class FileDisplayerController {
 	private ReactiveStreamFactory reactiveStreamFactory;
 
 	@Autowired
-	private TreeObserverFactory treeObserverFactory;
+	private EventObserverFactory treeObserverFactory;
 
 	private List<Subscription> subscriptions = new ArrayList<>();
 
 	@CrossOrigin
-	@RequestMapping(path = "/start", method = RequestMethod.POST)
+	@RequestMapping(path = "/start", method = RequestMethod.POST )
 	public String startObserving(@RequestBody String path) throws IOException {
-		ReactiveStream treeReactiveStream = reactiveStreamFactory.getReactiveStream(Paths.get(path));
-		Observable<Event> observable = treeReactiveStream.createObservable();
+		ReactiveStream reactiveStream = reactiveStreamFactory.getReactiveStream(Paths.get(path));
+		Observable<Event> observable = reactiveStream.createObservable();
 
-		TreeObserver observer = treeObserverFactory.getObserver(path);
+		EventObserver observer = treeObserverFactory.getObserver(path);
 
 		subscriptions.add(observable.subscribeOn(Schedulers.io()).subscribe(observer));
 		System.out.println("Start : "+observer.getEndPoint());
@@ -61,10 +62,32 @@ public class FileDisplayerController {
 	@RequestMapping(path = "/obtainEndPoint", method = RequestMethod.GET)
 	@ResponseBody
 	ResponseEntity<String> obtainEndPoint(String path) throws IOException {
-		TreeObserver observer = treeObserverFactory.getObserver(path);
+		EventObserver observer = treeObserverFactory.getObserver(path);
 
 
 		return new ResponseEntity<>(observer.getEndPoint(), HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(path = "/addFile", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> addFile(@RequestBody String path) throws IOException {
+		File file = new File(path);
+
+		if(file.createNewFile())
+			return new ResponseEntity<>("\"" + file.getName() + " created\"", HttpStatus.OK);
+		else
+			return new ResponseEntity<>("\"" + file.getName() + " already exist\"", HttpStatus.OK);
+
+	}
+
+	@CrossOrigin
+	@RequestMapping(path = "/removeFile", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> removeFile(@RequestBody String path) throws IOException {
+		File file = new File(path);
+		if(file.delete())
+			return new ResponseEntity<>("\"" + file.getName() + " deleted\"", HttpStatus.OK);
+		else
+			return new ResponseEntity<>("\"" + file.getName() + " can't be deleted\"", HttpStatus.OK);
 	}
 
 

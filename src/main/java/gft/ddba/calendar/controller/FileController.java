@@ -27,11 +27,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/app")
-public class FileDisplayerController {
+public class FileController {
 
 	@Autowired
 	private ReactiveStreamFactory reactiveStreamFactory;
-
 	@Autowired
 	private EventObserverFactory treeObserverFactory;
 
@@ -39,7 +38,7 @@ public class FileDisplayerController {
 
 	@CrossOrigin
 	@RequestMapping(path = "/start", method = RequestMethod.POST)
-	public String startObserving(@RequestBody String path) throws IOException {
+	public ResponseEntity<String> startObserving(@RequestBody String path) throws IOException {
 		ReactiveStream reactiveStream = reactiveStreamFactory.getReactiveStream(Paths.get(path));
 		Observable<Event> observable = reactiveStream.createObservable();
 
@@ -47,7 +46,7 @@ public class FileDisplayerController {
 
 		subscriptions.add(observable.subscribeOn(Schedulers.io()).subscribe(observer));
 		System.out.println("Start : " + observer.getEndPoint());
-		return observer.getEndPoint();
+		return new ResponseEntity<String>(observer.getEndPoint(), HttpStatus.OK);
 	}
 
 	@CrossOrigin
@@ -64,33 +63,30 @@ public class FileDisplayerController {
 	@ResponseBody
 	ResponseEntity<String> obtainEndPoint(String path) throws IOException {
 		EventObserver observer = treeObserverFactory.getObserver(path);
-
 		return new ResponseEntity<>(observer.getEndPoint(), HttpStatus.OK);
 	}
 
 	@CrossOrigin
 	@RequestMapping(path = "/addFile", method = RequestMethod.POST)
-	public
 	@ResponseBody
-	ResponseEntity<String> addFilePost(@RequestBody @PathParam("path") String path) throws IOException {
+	public ResponseEntity<String> addFilePost(@RequestBody @PathParam("path") String path) throws IOException {
 		File file = new File(path);
 
 		if (file.createNewFile())
 			return new ResponseEntity<>("\"" + file.getName() + " created\"", HttpStatus.OK);
 		else
-			return new ResponseEntity<>("\"" + file.getName() + " already exist\"", HttpStatus.OK);
+			return new ResponseEntity<>("\"Can not be created file: " + file.getName() + " because it already exists\"", HttpStatus.OK);
 	}
 
 	@CrossOrigin
 	@RequestMapping(path = "/addFile", method = RequestMethod.GET)
-	public
 	@ResponseBody
-	ResponseEntity<String> addFileGet(@PathParam("path") String path) throws IOException {
+	public ResponseEntity<String> addFileGet(@PathParam("path") String path) throws IOException {
 		File file = new File(path);
 
 		if (file.createNewFile())
 			return new ResponseEntity<>("\"" + file.getName() + " created\"", HttpStatus.OK);
 		else
-			return new ResponseEntity<>("\"" + file.getName() + " already exist\"", HttpStatus.OK);
+			return new ResponseEntity<>("\"Can not be created file:" + file.getName() + " because it already exists\"", HttpStatus.OK);
 	}
 }

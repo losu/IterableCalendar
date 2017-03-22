@@ -25,15 +25,36 @@
             <!--<button ng-click="connect()"  class="btn btn-default">Connect</button>-->
             <!--<button ng-click="closeWatchers()" ng-disabled="isConnected" class="btn btn-default">Disconnect</button>-->
         </form>
-        <form ng-controller="FileController">
-            <div class="form-group">
-                <label for="pathToAdd">File to add</label>
-                <input type="text" ng-model="pathToAddFile" id="pathToAdd" class="form-control" placeholder="C://...">
-                <span></span>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <div class="col-md-4">
+
+                        <label for="pathToAdd">File to add:</label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="text" ng-model="pathToAddFile" id="pathToAdd" class="form-control"
+                               placeholder="C://...">
+                    </div>
+                    <div class="col-md-4">
+                        <button ng-click="addFile(pathToAddFile)" class="btn btn-default">Add file</button>
+                    </div>
+                    <!--<span></span>-->
+                </div>
+
             </div>
-            <button ng-click="addFile(pathToAddFile)" class="btn btn-default">Add file</button>
-            <button ng-click="removeFile(pathToAddFile)" class="btn btn-default">Remove file</button>
-        </form>
+        </div>
+
+        <!--<form ng-controller="FileController">-->
+        <!--<div class="form-group">-->
+        <!--<label for="pathToAdd">File to add</label>-->
+        <!--<input type="text" ng-model="pathToAddFile" id="pathToAdd" class="form-control" placeholder="C://...">-->
+        <!--<span></span>-->
+        <!--</div>-->
+        <!--<button ng-click="addFile(pathToAddFile)" class="btn btn-default">Add file</button>-->
+        <!--</form>-->
     </header>
     <section>
         <div id="watchers-space" class="row">

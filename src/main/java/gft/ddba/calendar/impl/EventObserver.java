@@ -4,6 +4,7 @@ import gft.ddba.calendar.model.Event;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import rx.Observer;
 
+
 public class EventObserver implements Observer<Event> {
 
 	private SimpMessagingTemplate simpMessagingTemplate;

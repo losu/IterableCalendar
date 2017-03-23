@@ -1,5 +1,6 @@
 package gft.ddba.calendar.impl;
 
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.util.HashMap;
  * Created by ddba on 14/03/2017.
  */
 @Component
+@ThreadSafe
 public class EventObserverFactory {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;

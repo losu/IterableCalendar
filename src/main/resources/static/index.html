@@ -25,7 +25,7 @@
             <!--<button ng-click="connect()"  class="btn btn-default">Connect</button>-->
             <!--<button ng-click="closeWatchers()" ng-disabled="isConnected" class="btn btn-default">Disconnect</button>-->
         </form>
-        <div class="row">
+        <div class="row" ng-controller="FileController">
             <div class="col-md-12">
 
                 <div class="form-group">
@@ -47,14 +47,6 @@
             </div>
         </div>
 
-        <!--<form ng-controller="FileController">-->
-        <!--<div class="form-group">-->
-        <!--<label for="pathToAdd">File to add</label>-->
-        <!--<input type="text" ng-model="pathToAddFile" id="pathToAdd" class="form-control" placeholder="C://...">-->
-        <!--<span></span>-->
-        <!--</div>-->
-        <!--<button ng-click="addFile(pathToAddFile)" class="btn btn-default">Add file</button>-->
-        <!--</form>-->
     </header>
     <section>
         <div id="watchers-space" class="row">
@@ -64,85 +56,3 @@
 </div>
 </body>
 </html>
-
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--<title>Hello WebSocket</title>-->
-<!--<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
-<!--<link href="/main.css" rel="stylesheet">-->
-<!--<script type="text/javascript"-->
-<!--src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>-->
-<!--<script src="/webjars/jquery/jquery.min.js"></script>-->
-<!--<script src="/webjars/sockjs-client/sockjs.min.js"></script>-->
-<!--<script src="/webjars/stomp-websocket/stomp.min.js"></script>-->
-<!--<script src="/app.js"></script>-->
-<!--<script src="/ConnectionController.js"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<noscript>-->
-<!--<h2 style="color: #ff0000">Seems your browser doesn't support-->
-<!--Javascript! Websocket relies on Javascript being enabled. Please-->
-<!--enable Javascript and reload this page!</h2>-->
-<!--</noscript>-->
-<!--<div ng-app="App">-->
-<!--<div ng-controller="ConnectionController">-->
-<!--<div id="main-content" class="container">-->
-<!--<div class="mb-md row">-->
-<!--<div class="col-md-6">-->
-<!--<form class="form-inline">-->
-<!--<div class="form-group">-->
-<!--<label>WebSocket connection:</label>-->
-<!--<button ng-click="connect()" ng-disabled="isConnected" class="btn btn-default"-->
-<!--type="submit">Connect-->
-<!--</button>-->
-<!--<button ng-click="disconnect()" ng-disabled="!isConnected" class="btn btn-default"-->
-<!--type="submit"-->
-<!--disabled="disabled">Disconnect-->
-<!--</button>-->
-<!--</div>-->
-<!--</form>-->
-<!--</div>-->
-<!--</div>-->
-<!--&lt;!&ndash;<div class="mb-md row">&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="col-md-6">&ndash;&gt;-->
-<!--&lt;!&ndash;<form class="form-inline">&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;<div ng-click="remove()">X</div>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;<label for="path">Directory to watch</label>&ndash;&gt;-->
-<!--&lt;!&ndash;<input type="text" ng-model="path" id="path" class="form-control" placeholder="C://...">&ndash;&gt;-->
-<!--&lt;!&ndash;<span></span>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;<button ng-click="startWatching(path)" class="btn btn-default">Send</button>&ndash;&gt;-->
-<!--&lt;!&ndash;</form>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="mb-md row">&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="col-md-6">&ndash;&gt;-->
-<!--&lt;!&ndash;<form class="form-inline">&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;<div ng-click="remove()">X</div>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;<table id="conversation" class="table table-striped">&ndash;&gt;-->
-<!--&lt;!&ndash;<thead>&ndash;&gt;-->
-<!--&lt;!&ndash;<tr>&ndash;&gt;-->
-<!--&lt;!&ndash;<th>Events on the directory:</th>&ndash;&gt;-->
-<!--&lt;!&ndash;</tr>&ndash;&gt;-->
-<!--&lt;!&ndash;</thead>&ndash;&gt;-->
-<!--&lt;!&ndash;</table>&ndash;&gt;-->
-<!--&lt;!&ndash;<listener-events-directive event="event" id="events"></listener-events-directive>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-<!--&lt;!&ndash;</form>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--<section>-->
-<!--<div id="watchers-space" class="row">-->
-<!--<Watcher></Watcher>-->
-<!--</div>-->
-<!--</section>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-
-<!--</body>-->
-<!--</html>-->

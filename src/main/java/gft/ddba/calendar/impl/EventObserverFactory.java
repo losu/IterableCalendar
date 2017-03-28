@@ -3,39 +3,41 @@ package gft.ddba.calendar.impl;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by ddba on 14/03/2017.
- */
-@Component
+
+@Service
 @ThreadSafe
 public class EventObserverFactory {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	private final HashMap<String, EventObserver> observers = new HashMap<>();
-	private int endPointAccumulator;
+	private final Map<String, EventObserver> observers = new ConcurrentHashMap<>();
+	private AtomicInteger endPointAccumulator= new AtomicInteger(0);
 
-	public EventObserver getObserver(String path) throws IOException {
+	public EventObserver getObserver() throws IOException {
+		return new EventObserver(String.valueOf(endPointAccumulator.incrementAndGet()), simpMessagingTemplate);
 
-		EventObserver observer = observers.get(path);
-
-		if(observer==null) {
-			observer = new EventObserver(String.valueOf(endPointAccumulator),simpMessagingTemplate);
-			endPointAccumulator++;
-			observers.put(path,observer);
-		}
-
-		return observer;
 	}
 
-	public void removeAll() {
-		this.observers.clear();
-	}
+//	public EventObserver getObserver(String path) throws IOException {
+//
+//		EventObserver observer = observers.get(path);
+//
+//		if(observer==null) {
+//			observer = new EventObserver(String.valueOf(endPointAccumulator),simpMessagingTemplate);
+//			endPointAccumulator.incrementAndGet();
+//			observers.put(path,observer);
+//		}
+//
+//		return observer;
+//	}
+
 
 
 }

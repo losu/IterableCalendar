@@ -10,8 +10,6 @@ import java.util.Queue;
 @Service
 public class NodeConverter {
 
-
-
 	/**
 	 * Convert tree-based structure to iterable collection
 	 *

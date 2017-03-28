@@ -31,8 +31,6 @@ public class PathNode implements Node<Path> {
 		List<Node<Path>> children = new ArrayList<>();
 		try {
 			if (Files.isDirectory(root)) {
-//			children = Files.walk(Paths.get("C:/Users/ddba/Desktop/Test/")).map(el -> new PathNode(el))
-//					.collect(Collectors.toList());
 				children = Files.list(root).map(path -> new PathNode(path)).collect(Collectors.toList());
 			}
 		} catch (IOException e) {
@@ -48,32 +46,3 @@ public class PathNode implements Node<Path> {
 		return sb.toString();
 	}
 }
-//private final Path rootPath;
-//
-//	public PathNode(Path rootPath) {
-//		this.rootPath = rootPath;
-//	}
-//
-//	@Override
-//	public Path getData() {
-//		return rootPath;
-//	}
-//
-//
-//	@Override
-//	public List<Node<Path>> getChildren() {
-//		return initChildren();
-//	}
-//
-//	private List<Node<Path>> initChildren() {
-//		List<Node<Path>> children = new ArrayList<>();
-//		if (Files.isDirectory(rootPath)) {
-//			try {
-//				children = Files.list(rootPath).map(path -> new PathNode(path)).collect(Collectors.toList());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return children;
-//	}
-//}

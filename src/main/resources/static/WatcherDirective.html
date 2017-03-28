@@ -10,9 +10,9 @@
                     </div>
                     <div class="mr-md col-md-3">
                         <input type="text" ng-model="path" id="path" class="form-control" placeholder="C://...">
+                        <button ng-click="obtainEndPoint(path)" class="btn btn-default">Connect</button>
                     </div>
                     <div class="col-md-3">
-                        <button ng-click="startWatching(path)" class="btn btn-default">Connect</button>
                     </div>
                     <div class="mr-md col-md-3" ng-controller="DisconnectController">
                         <button ng-click="closeWatchers()" ng-disabled="isConnected" class="btn btn-default">

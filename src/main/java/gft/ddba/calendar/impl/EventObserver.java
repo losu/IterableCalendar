@@ -2,10 +2,9 @@ package gft.ddba.calendar.impl;
 
 import gft.ddba.calendar.model.Event;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import rx.Observer;
+import rx.Subscriber;
 
-
-public class EventObserver implements Observer<Event> {
+public class EventObserver extends Subscriber<Event> {
 
 	private SimpMessagingTemplate simpMessagingTemplate;
 

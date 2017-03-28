@@ -20,7 +20,7 @@
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
     <header class="row">
-        <form class="form-inline" ng-controller="DisconnectController">
+        <form class="form-inline" ng-controller="ConnectionController">
             <!--<button add-watcher class="btn btn-default">Connect</button>-->
             <!--<button ng-click="connect()"  class="btn btn-default">Connect</button>-->
             <!--<button ng-click="closeWatchers()" ng-disabled="isConnected" class="btn btn-default">Disconnect</button>-->
@@ -30,10 +30,8 @@
 
                 <div class="form-group">
                     <div class="col-md-4">
-
-                        <label for="pathToAdd">File to add:</label>
+                        <label for="pathToAdd">Add file:</label>
                     </div>
-
                     <div class="col-md-4">
                         <input type="text" ng-model="pathToAddFile" id="pathToAdd" class="form-control"
                                placeholder="C://...">

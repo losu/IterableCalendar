@@ -1,6 +1,5 @@
 package gft.ddba.calendar.impl;
 
-import gft.ddba.calendar.service.ReactiveStream;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,6 +19,7 @@ public class ReactiveStreamFactory implements AutoCloseable {
 		if(stream==null) {
 			stream = new ReactiveStream(path);
 			reactiveStreams.put(path.toString(),stream);
+//			stream.initialize();
 		}
 
 		return stream;

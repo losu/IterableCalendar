@@ -1,5 +1,6 @@
 package gft.ddba.calendar.service;
 
+import gft.ddba.calendar.impl.ReactiveStream;
 import gft.ddba.calendar.model.Event;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -33,6 +34,7 @@ public class ReactiveStreamTest {
 	public void shouldEmitEventOnNewDirectory() throws IOException, InterruptedException {
 		subscriber = ReplaySubject.create();
 		stream = new ReactiveStream(Paths.get(dir.getRoot().getPath()));
+//		Observable<Event> observable = stream.getObservable();
 		Observable<Event> observable = stream.createObservable();
 		observable.subscribe(subscriber);
 		Files.createFile(Paths.get(dir.getRoot().getPath() + "/test"));
@@ -41,6 +43,7 @@ public class ReactiveStreamTest {
 
 	@Test(timeout = 1000)
 	public void shouldRegisterNewEventInTheNewFolderCreatedFolder() throws IOException, InterruptedException {
+//		Observable<Event> observable = stream.getObservable();
 		Observable<Event> observable = stream.createObservable();
 		observable.subscribe(subscriber);
 		if (dir.newFolder("folder", "newDirectory").mkdir()) {
@@ -51,12 +54,14 @@ public class ReactiveStreamTest {
 
 	@Test
 	public void shouldConvertDirectoryToObservable() throws IOException {
+//		Assertions.assertThat(stream.getObservable()).isInstanceOf(Observable.class);
 		Assertions.assertThat(stream.createObservable()).isInstanceOf(Observable.class);
 	}
 
 	@Test
 	public void shouldCloseTheStreamAndAllTheRelatedResources() throws Exception {
 		stream.close();
+//		Assertions.assertThatThrownBy(stream::getObservable).isInstanceOf(ClosedWatchServiceException.class);
 		Assertions.assertThatThrownBy(stream::createObservable).isInstanceOf(ClosedWatchServiceException.class);
 	}
 }

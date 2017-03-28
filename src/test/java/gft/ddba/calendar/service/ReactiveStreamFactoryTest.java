@@ -1,5 +1,6 @@
 package gft.ddba.calendar.service;
 
+import gft.ddba.calendar.impl.ReactiveStream;
 import gft.ddba.calendar.impl.ReactiveStreamFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,6 +26,7 @@ public class ReactiveStreamFactoryTest {
 	@Test(expected=ClosedWatchServiceException.class)
 	public void shouldResourceBeClosed() throws IOException {
 		reactiveStreamFactory.close();
+//		stream.getObservable();
 		stream.createObservable();
 	}
 

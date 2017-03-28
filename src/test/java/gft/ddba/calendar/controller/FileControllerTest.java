@@ -25,7 +25,7 @@ public class FileControllerTest {
 	private TestRestTemplate restTemplate;
 
 	@Test
-	public void shouldReturnHttpStatusOkForAddFileRequest() {
+	public void shouldReturnHttpStatusOKForAddFileRequest() {
 		ResponseEntity<String> response = this.restTemplate.postForEntity("/app/addFile", folder.getRoot().getAbsolutePath() + "/newFile", String.class);
 		Assert.assertThat(response.getStatusCode(), Matchers.is(HttpStatus.OK));
 	}
@@ -52,13 +52,28 @@ public class FileControllerTest {
 	@Test
 	public void shouldNotCreateNewFileByGetRequest() throws IOException {
 		folder.newFile("newFile");
-		ResponseEntity<String> response = this.restTemplate.postForEntity("/app/addFile?path=", folder.getRoot().getAbsolutePath() + "/newFile", String.class);
+		ResponseEntity<String> response = this.restTemplate.getForEntity("/app/addFile?path="+ folder.getRoot().getAbsolutePath() + "/newFile", String.class);
 		Assert.assertTrue(response.getBody().contains("Can not be created file"));
 	}
 
 	@Test
-	public void start() {
-		ResponseEntity<String> response = this.restTemplate.postForEntity("/gs-guide-websocket", folder.getRoot().getAbsolutePath(), String.class);
-		ResponseEntity<String> response1 = this.restTemplate.postForEntity("/app/start", folder.getRoot().getAbsolutePath(), String.class);
+	public void shouldReturnHttpStatusOKForObtainEndPointRequest(){
+		ResponseEntity<String> response = this.restTemplate.getForEntity("/app/obtainEndPoint",  String.class);
+		Assert.assertThat(response.getStatusCode(), Matchers.is(HttpStatus.OK));
 	}
+
+//	@Test
+//	public void shouldBeOkWhenPathExist() throws Exception {
+//
+//		ResponseEntity<String> endPoint = restTemplate.getForEntity("/app/obtainEndPoint", String.class);
+////
+//		HttpHeaders requestHeadersSession = new HttpHeaders();
+//		requestHeadersSession.set("Cookie","");
+//		HttpEntity<String> requestEntityToKeepSession = new HttpEntity(folder, requestHeadersSession);
+//
+//		ResponseEntity responseEntity = restTemplate.postForEntity("/app/start/" + endPoint.getBody(), requestHeadersSession, String.class);
+//
+//		Assert.assertThat(responseEntity.getStatusCode(), Matchers.is(HttpStatus.OK));
+//	}
+
 }

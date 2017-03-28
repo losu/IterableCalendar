@@ -29,8 +29,8 @@ public class Subscriptions implements AutoCloseable {
 		subscription.put(endPoint, observable.subscribe(subscriber));
 	}
 
-	public void unsubscribe(String key) {
-		Subscription currentSubscription = subscription.remove(key);
+	public void unsubscribe(String endpoint) {
+		Subscription currentSubscription = subscription.remove(endpoint);
 		if (currentSubscription == null) return;
 		currentSubscription.unsubscribe();
 	}

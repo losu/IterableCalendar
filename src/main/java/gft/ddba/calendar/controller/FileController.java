@@ -32,37 +32,26 @@ public class FileController {
 	@Autowired
 	private EventObserverFactory eventObserverFactory;
 
-//	private Map<String, Subscriber<Event>> subscriber = new ConcurrentHashMap<>();
-//	private Map<String, Subscription> subscriptions = new ConcurrentHashMap<>();
-//
 	@Autowired
 	private Subscriptions subscriptions;
 
 	@CrossOrigin
 	@RequestMapping(path = "/start/{endPoint}", method = RequestMethod.POST)
 	public ResponseEntity startObserving(@RequestBody String path, @PathVariable String endPoint) throws IOException {
-
 		ReactiveStream reactiveStream = reactiveStreamFactory.getReactiveStream(Paths.get(path));
 		Observable<Event> observable = reactiveStream.createObservable();
-
 		EventObserver observer = eventObserverFactory.getObserver();
 
-//		subscriptions.put(endPoint,observable.subscribeOn(Schedulers.io()).subscribe(observer));
 		subscriptions.subscribe(endPoint, observable);
 
-//		return new ResponseEntity<String>(observer.getEndPoint(), HttpStatus.OK);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
-
 	@CrossOrigin
-	@RequestMapping(path = "/stop/{websocket", method = RequestMethod.POST)
-	public void stopObserving(String endpoint) throws IOException {
+	@RequestMapping(path = "/stop/{endpoint}", method = RequestMethod.POST)
+	public void stopObserving( @PathVariable String endpoint) throws IOException {
 		subscriptions.unsubscribe(endpoint);
-		//subscriptions.forEach(Subscription::unsubscribe);
 	}
-
-
 
 	@CrossOrigin
 	@RequestMapping(path = "/obtainEndPoint", method = RequestMethod.GET)
@@ -71,7 +60,6 @@ public class FileController {
 		EventObserver observer = eventObserverFactory.getObserver();
 
 		subscriptions.addSubscriber(observer.getEndPoint(), observer);
-//		subscriber.put(observer.getEndPoint(),observer);
 
 		return new ResponseEntity<>(observer.getEndPoint(), HttpStatus.OK);
 	}

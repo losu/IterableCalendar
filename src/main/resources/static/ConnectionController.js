@@ -3,16 +3,11 @@ angular.module('ConnectionModule',[])
     .controller('ConnectionController', ['$scope','$rootScope','$http', '$timeout',
             function($scope, $rootScope, $http, $timeout) {
 
- var host = "http://" + window.location.host;
- $scope.websocket='';
-
-
-
- var stompClient = null;
+    var host = "http://" + window.location.host;
+    var stompClient = null;
 
     $rootScope.$on('Disconnect', function(){
            $scope.disconnect();
-        //   $scope.remove();
     });
 
     $scope.$on('$destroy', function(){
@@ -20,11 +15,10 @@ angular.module('ConnectionModule',[])
         $scope.$destroy();
     });
 
+    $scope.websocket='';
     $scope.event='';
-    $scope.label = "";
+    $scope.label = '';
     $scope.hideLabel = true;
-
-
 
     $scope.connect = function(data, callback, path) {
         var socket = new SockJS(host+'/gs-guide-websocket');
@@ -41,24 +35,21 @@ angular.module('ConnectionModule',[])
         });
     }
 
-
     $scope.startWatching = function(path, endpoint){
-            $http({
-                method: 'POST',
-                url: host+'/app/start/'+endpoint,
-                data: path,
-                withCredentials: true
-                }).then(function successCallback(response) {
-                        $scope.websocket=endpoint;
-                     }, function errorCallback(response) {
-                        $scope.label=response.data;
-                        console.log(response.toString());
-                        $scope.hideLabel=false;
-                        $timeout(function () {$scope.hideLabel = true}, 1000);
-                     });
-
+        $http({
+            method: 'POST',
+            url: host+'/app/start/'+endpoint,
+            data: path,
+            withCredentials: true
+            }).then(function successCallback(response) {
+                    $scope.websocket=endpoint;
+             }, function errorCallback(response) {
+                    $scope.label=response.data;
+                    console.log(response.toString());
+                    $scope.hideLabel=false;
+                    $timeout(function () {$scope.hideLabel = true}, 1000);
+             });
         }
-
 
     $scope.obtainEndPoint = function(path){
         $http({
@@ -75,7 +66,6 @@ angular.module('ConnectionModule',[])
                 $timeout(function () {$scope.hideLabel = true}, 1000);
             });
         }
-
 
     $scope.disconnect = function(){
 
@@ -96,6 +86,4 @@ angular.module('ConnectionModule',[])
                 $timeout(function () {$scope.hideLabel = true}, 1000);
             });
     }
-
-
 }]);

@@ -19,25 +19,21 @@ public class ReactiveStreamFactory implements AutoCloseable {
 		if(stream==null) {
 			stream = new ReactiveStream(path);
 			reactiveStreams.put(path.toString(),stream);
-//			stream.initialize();
 		}
-
 		return stream;
 
 	}
 
 	@Override
 	public void close() throws IOException {
-		reactiveStreams.forEach((s, treeReactiveStream) -> {
+		reactiveStreams.forEach((s, stream) -> {
 			try {
-				treeReactiveStream.close();
+				stream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		});
-	}
-
-	public void removeAll() {
 		this.reactiveStreams.clear();
 	}
+
 }
